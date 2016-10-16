@@ -2,6 +2,9 @@
 //  GameDrawable.h
 //  OpenGLGame
 //
+//  Used for renderable Game Objects
+//
+//
 //  Created by Nickolas Morrison on 2015-07-05.
 //  Copyright (c) 2015 Nick Morrison. All rights reserved.
 //

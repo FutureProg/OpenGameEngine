@@ -21,6 +21,8 @@ void GameCamera::init(){
     view = glm::mat4(1.f);
 }
 
+// Update sets the VIEW parameter for the update GameEvent
+// representing movement of the camera
 void GameCamera::update(OGEEvents::GameEvent* evt){
     using namespace OGEEvents;
     GameEvent* renderEvt = GameEventManager::eventByName(OGEWindowRenderEvent_NAME);

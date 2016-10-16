@@ -13,9 +13,11 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <functional>
 #include <thread>
 #include "Core.h"
 
+// Common OGEEvent types
 #define OGEWindowRenderEvent_NAME ("OGE_RENDER_EVT")
 #define OGEEventType_Render ("OGE_EVT_TYPE_RENDER")
 #define OGEWindowUpdateEvent_NAME ("OGE_UPDATE_EVT")
@@ -27,20 +29,27 @@ namespace OGEEvents{
         
         
     public:
+        // the game event delegate type
         typedef void(*OGEEventDelegate)(GameEvent*);
+      
         GameEvent(const char * type,OGECore::OGEObject* sender):type(type),sender(sender),OGECore::OGEObject(){};
         ~GameEvent(){};
-        
+      
+        // Call the game event asynchronously BUGGED
         void call(){
           std::thread callThread(&GameEvent::call_thread,this);
         };
+      
+        // call the game event synchronously
         void callWait(){
             call_thread();
         }
+      
         OGEObject* sender;
         const char* type;
         const char* name;
-        
+      
+        // Add parameters to the event
         void setParamObject(const char* key, OGEObject* param){paramsObj[key] = param;};
         void setParamFloat(const char* key, float param){paramsFloat[key] = param;};
         void setParamInt(const char* key, int param){paramsInt[key] = param;};
@@ -50,7 +59,8 @@ namespace OGEEvents{
         void setParamLong(const char* key, long param){paramsLong[key] = param;};
         void setParamLongDouble(const char* key, long double param){paramsLongDouble[key] = param;};
         void addDelegate(OGEEventDelegate delegate){delegates.push_back(delegate);};
-        
+      
+        // Retrieve paramaters from the event
         OGEObject* getParamObject(const char* key){return paramsObj[key];};
         float getParamFloat(const char* key){return paramsFloat[key];};
         int getParamInt(const char* key){return paramsInt[key];};
@@ -61,6 +71,7 @@ namespace OGEEvents{
         long double getParamLongDouble(const char* key){return paramsLongDouble[key];};
       
     private:
+      // Send a message to all of the delegates
       void call_thread(){
         for (int i = 0; i < delegates.size(); i++) {
           delegates[i](this);
@@ -69,7 +80,8 @@ namespace OGEEvents{
       
     private:
         std::vector<OGEEventDelegate> delegates;
-        
+      
+        // Parameters for each type
         std::map<const char*, OGEObject*> paramsObj;
         std::map<const char*, float> paramsFloat;
         std::map<const char*, int> paramsInt;
@@ -83,10 +95,12 @@ namespace OGEEvents{
     class GameEventManager: OGECore::OGEObject{
     public:
         typedef void(*OGEEventDelegate)(GameEvent*);
+        // Add an event to the Event Manager
         static void registerEvent(GameEvent& evt){
             events.push_back(&evt);
         };
-        
+      
+        // Find a game event by its name
         static GameEvent* eventByName(const char* name){
             for (int i = 0; i < events.size(); i++) {
                 if (events[i]->name == name) {
@@ -95,7 +109,8 @@ namespace OGEEvents{
             }
             return NULL;
         }
-        
+      
+        // Register a delegate by the event name
         static void registerDelegateByName(const char* name,OGEEventDelegate del){
             for (int i = 0; i < events.size(); i++) {
                 if (events[i]->name == name) {
@@ -103,7 +118,8 @@ namespace OGEEvents{
                 }
             }
         };
-        
+      
+        // Register a delegate by the event type
         static void registerDelegateByType(const char* type,OGEEventDelegate del){
             for (int i = 0; i < events.size(); i++) {
                 if (events[i]->type == type) {

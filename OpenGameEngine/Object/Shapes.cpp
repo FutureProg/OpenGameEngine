@@ -28,7 +28,6 @@ void ShapeTriangle::init(){
 }
 
 void ShapeTriangle::update(OGEEvents::GameEvent* evt){
-    //model = glm::rotate(model,0.04f, glm::vec3(0,0,1));
 }
 
 void ShapeTriangle::render(OGEEvents::GameEvent* evt){

@@ -15,7 +15,7 @@
 #include <map>
 
 namespace OGEEvents {
-    
+  
     class GameInputManager {
         
         typedef int GLFWKey;
@@ -29,7 +29,8 @@ namespace OGEEvents {
     public:
         GameInputManager(GLFWwindow &window);
         ~GameInputManager(){};
-        
+      
+        // Updates the state of each key
         void update(OGEEvents::GameEvent* evt){
             for (std::map<int,int>::iterator it = keystates.begin(); it != keystates.end(); it++) {
                 if (keystates[it->first] == JustReleased) {
@@ -40,9 +41,11 @@ namespace OGEEvents {
                 }
             }
         };
-        
+      
+        // List of keystates, mapped by the GLFWKey
         static std::map<int,int> keystates;
-        
+      
+        // Callback function that sets the state of each key upon pressing
         static void key_callback(GLFWwindow* window,int key, int scancode, int action, int mods){
             if (keystates.find(key) != keystates.end()) {
                 if (keystates[key] == Pressing && action == GLFW_RELEASE) {
@@ -60,7 +63,8 @@ namespace OGEEvents {
                     break;
             }
         };
-        
+      
+        // Check the key state of each key
         static bool getKeyUp(GLFWKey key){
             return keystates.find(key) != keystates.end() && keystates[key] == NotPressing;
         };

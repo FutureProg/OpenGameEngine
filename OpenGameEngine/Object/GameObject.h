@@ -39,7 +39,7 @@ namespace OGECore {
         unsigned int getID(){
             return ID;
         };
-        
+      
         void addComponent(GameComponent& component){
             components.push_back(&component);
             component.init();
@@ -69,14 +69,16 @@ namespace OGECore {
             }
         }
         
-        virtual void init() = 0;
-        virtual void update(OGEEvents::GameEvent* evt) = 0;
+        virtual void init() = 0;// called upon instantiation
+        virtual void update(OGEEvents::GameEvent* evt) = 0; // called once per frame
         virtual void onDestroy() = 0;
         
     public:
         static void instantiate(GameObject& obj){
             objects.push_back(&obj);
         };
+      
+        // Find game objects with the desired tag
         static std::vector<GameObject*> objectsWithTag(Tag tag){
             std::vector<GameObject*> re;
             for (int i = 0; i < GameObject::objects.size(); i++) {
@@ -86,6 +88,8 @@ namespace OGECore {
             }
             return re;
         };
+      
+        // Update the game objects, called by the game window
         static void updateAll(OGEEvents::GameEvent* evt){
             for (int i = 0; i < objects.size(); i++) {
                 objects[i]->update(evt);
